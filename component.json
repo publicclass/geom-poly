@@ -1,0 +1,15 @@
+{
+  "name": "geom-poly",
+  "repo": "publicclass/geom-poly",
+  "description": "A collection of terse, efficient polygon tools.",
+  "version": "0.1.0",
+  "keywords": [],
+  "dependencies": {
+    "publicclass/geom-vec": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ]
+}

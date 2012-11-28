@@ -1,0 +1,282 @@
+var vec = require('geom-vec');
+
+
+var unallocated = []
+  , allocated = []
+  , totalAllocated = 0;
+
+function Poly(){
+  this.length = 0;
+  this.vertices = []
+  this.edges = []
+}
+
+var poly = module.exports = {
+
+  make: function(){
+    var p = poly.alloc();
+    if( arguments.length ){
+      for( var i=0; i < arguments.length; i+=2 )
+        poly.add(p,arguments[i],arguments[i+1]);
+      poly.close(p);
+    }
+    return p;
+  },
+
+  alloc: function(){
+    if( !unallocated.length ){
+      var i = totalAllocated
+        , u = unallocated.length - i;
+      totalAllocated = (totalAllocated || 64) * 2; // double the size (128>256>512 etc)
+      allocated.length = totalAllocated;
+      console.warn('poly alloc',totalAllocated)
+      while(i < totalAllocated){
+        var p = new Poly();
+        unallocated[u+i] = p;
+        allocated[i] = p;
+        i++;
+      }
+    }
+    return unallocated.pop();
+  },
+
+  free: function(p){
+    if( p ){
+      while(p.vertices.length)
+        vec.free(p.vertices.pop());
+      while(p.edges.length)
+        vec.free(p.edges.pop());
+      p.length = 0;
+      unallocated.push(p);
+    }
+    return poly;
+  },
+
+  add: function(p,x,y){
+    var v = vec.make(x,y)
+    if( p.length ){
+      // an edge is a vector between the last and
+      // the current vertex
+      var l = p.vertices[p.length-1];
+      p.edges.push(vec.sub(v,l));
+    }
+    p.vertices.push(v);
+    p.length++;
+    return poly;
+  },
+
+  close: function(p){
+    if( p.length ){
+      // an edge is a vector between the last and
+      // the current vertex
+      var l = p.vertices[p.length-1]
+      var v = p.vertices[0];
+      p.edges.push(vec.sub(v,l));
+    }
+    return poly;
+  },
+
+  // source: http://alienryderflex.com/polygon/
+  inside: function(p,x,y){
+    var oddNodes = false;
+    for( var i=0,j=p.vertices.length-1; i < p.vertices.length; i++ ){
+      var vI = p.vertices[i]
+        , vJ = p.vertices[j];
+      if( (vI.y< y && vJ.y>=y
+       ||  vJ.y< y && vI.y>=y)
+       && (vI.x<=x || vJ.x<=x))
+        oddNodes ^= (vI.x+(y-vI.y)/(vJ.y-vI.y)*(vJ.x-vI.x)<x);
+      j = i;
+    }
+    return oddNodes;
+  },
+
+  area: function(p){
+    var n = p.vertices.length
+      , sum = 0;
+    for(var i=0; i < n; i++){
+      var v = p.vertices[i]
+      var q = p.vertices[(i+1)%n]; // TODO optimize away modulo plz
+      sum += v[0] * q[1] - q[0] * v[1];
+    }
+    return .5 * sum;
+  },
+
+  centroid: function(p){
+    var a = poly.area(p) // TODO maybe accept area as an argument (in case it's cached?)
+      , n = p.length
+      , P = p.vertices
+      , c = vec.make();
+    for(var i=0; i < n; i++){
+      var v = P[i]
+        , q = P[(i+1)%n]
+        , ai = vec.cross(v,q);
+      c[0] += (v[0] + q[0]) * ai
+      c[1] += (v[1] + q[1]) * ai
+    }
+    var b = 1 / (6 * a);
+    return vec.mul(c,[b,b],c);
+  },
+
+  translate: function(p,x,y,o){
+    var t = vec.make(x,y)
+    o = o || p;
+    for(var j=0; j < p.length; j++)
+      vec.add(p.vertices[j],t,o.vertices[j]);
+    // TODO this will not make a functional `o` (should use poly.add()/poly.close())
+    vec.free(t)
+    return o;
+  },
+
+  rotate: function(p,theta,o){
+    o = o || poly.make()
+    // TODO
+    return o;
+  },
+
+  scale: function(p,theta,o){
+    o = o || poly.make()
+    // TODO
+    return o;
+  },
+
+  transform: function(p,mat,o){
+    o = o || p
+    for(var j=0; j < p.length; j++)
+      vec.transform(p.vertices[j],mat,o.vertices[j]);
+    // TODO this won't transform the edges. (which is ok if only translate is used)
+    // TODO and this also will not make a functional `o`
+    return o;
+  },
+
+  convexHull: function(p,o){
+    o = o || poly.make()
+    // TODO
+    return o;
+  },
+
+  aabb: function(p){
+    // TODO
+    return []; // [x,y,w,h]? or [x1,y1,x2,y2]? or Poly(x1,y1,x2,y2,x3,y3,x4,y4)?
+  },
+
+  // a->b goes through an edge of p? if so set the intersection
+  // at i and the normal of the edge at n
+  intersects: function(p,a,b,i,n){
+    // TODO
+
+  },
+
+  // http://www.codeproject.com/Articles/15573/2D-Polygon-Collision-Detection
+  // is polygon `a` going to collide with polygon `b`?
+  // `v` is the relative velocity of the polygons (ie. velA - velB)
+  // returns a collision info object:
+  //    { intersect: Bool, willIntersect: Bool, nearestEdge: vec, minTranslationVector: vec}
+  collides: function(a,b,v){
+    // TODO this is not pooled!
+    var res = {
+      intersect: true,
+      willIntersect: true
+    }
+
+    v = v || vec.make()
+    var minIntervalDistance = Infinity;
+    var translationAxis = vec.make();
+    var nearestEdge = vec.make();
+    var axis = vec.make()
+    var cA, cB, cD;
+    var iA = vec.make();
+    var iB = vec.make();
+
+    // loop through all edges of both polygons
+    for(var i=0; i < (a.length+b.length); i++){
+      var edge = i < a.length ? a.edges[i] : b.edges[i-a.length]
+
+      vec.perp(edge,axis)
+      vec.norm(axis,axis)
+
+      project(a,axis,iA)
+      project(b,axis,iB)
+
+      // are they currently intersecting?
+      if( intervalDistance(iA,iB) > 0 ){
+        res.intersect = false;
+      }
+
+      // will they intersect?
+      var vProj = vec.dot(axis,v);
+      if( vProj < 0 )
+        iA[0] += vProj;
+      else
+        iA[1] += vProj;
+
+      var iD = intervalDistance(iA,iB);
+      if( iD > 0 ){
+        res.willIntersect = false;
+      }
+
+      // no intersection will and won't happen
+      if( !res.intersect && !res.willIntersect )
+        break;
+
+      // find out if it's the closest one
+      iD = Math.abs(iD);
+      if( iD < minIntervalDistance ){
+        minIntervalDistance = iD;
+        vec.copy(edge, nearestEdge);
+        vec.copy(axis,translationAxis);
+
+        cA = cA || poly.centroid(a)
+        cB = cB || poly.centroid(b)
+        cD = vec.sub(cA, cB, cD);
+        if( vec.dot(cD, translationAxis) < 0 )
+          vec.neg(translationAxis,translationAxis)
+      }
+    }
+
+    // the minimum translation vector can
+    // be used to push the polygons apart
+    if( res.willIntersect ){
+      translationAxis[0] *= minIntervalDistance;
+      translationAxis[1] *= minIntervalDistance;
+      res.minTranslationVector = translationAxis;
+      res.nearestEdge = nearestEdge;
+    } else {
+      vec.free(translationAxis)
+      vec.free(nearestEdge)
+    }
+
+    vec.free(iA)
+    vec.free(iB)
+    vec.free(cA)
+    vec.free(cB)
+    vec.free(cD)
+    vec.free(axis)
+
+    return res;
+  }
+
+}
+
+
+// `i` (interval) will be [min,max]
+// TODO should this be exposed as poly.project()?
+function project(p,axis,i){
+  var dot = vec.dot(axis,p.vertices[0])
+  i = i || vec.make();
+  i[0] = dot
+  i[1] = dot
+  for(var j=0; j < p.length; j++){
+    dot = vec.dot(axis,p.vertices[j])
+    if( dot < i[0] )
+      i[0] = dot;
+    else if( dot > i[1] )
+      i[1] = dot;
+  }
+  return i
+}
+
+
+function intervalDistance(a,b){
+  return a[0] < b[0] ? b[0] - a[1] : a[0] - b[1];
+}
