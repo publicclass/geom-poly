@@ -165,8 +165,18 @@ var poly = module.exports = {
   },
 
   aabb: function(p){
-    // TODO
-    return []; // [x,y,w,h]? or [x1,y1,x2,y2]? or Poly(x1,y1,x2,y2,x3,y3,x4,y4)?
+    // [t,r,b,l]
+    var aabb = [Infinity,-Infinity,-Infinity,Infinity]
+    for(var j=0; j < p.length; j++){
+      var v = p.vertices[j];
+      if( v[1] < aabb[0] ) aabb[0] = v[1] // t
+      if( v[0] > aabb[1] ) aabb[1] = v[0] // r
+      if( v[1] > aabb[2] ) aabb[2] = v[1] // b
+      if( v[0] < aabb[3] ) aabb[3] = v[0] // l
+    }
+    return aabb;
+      // or [x,y,w,h]?
+      // or Poly(x1,y1,x2,y2,x3,y3,x4,y4)?
   },
 
   // a->b goes through an edge of p? if so set the intersection
