@@ -49,7 +49,16 @@ var poly = module.exports = {
       p.length = 0;
       unallocated.push(p);
     }
-    return poly;
+    return p;
+  },
+
+  copy: function(p,c){
+    c = poly.free(c) || poly.make()
+    for (var i = 0; i < p.vertices.length; i++) {
+      poly.add(c,p.vertices[i][0],p.vertices[i][1])
+    }
+    poly.close(c);
+    return c;
   },
 
   add: function(p,x,y){
