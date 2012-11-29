@@ -192,7 +192,8 @@ var poly = module.exports = {
   // returns a collision info object:
   //    { intersect: Bool, willIntersect: Bool, nearestEdge: vec, minTranslationVector: vec}
   collides: function(a,b,v){
-    // TODO this is not pooled!
+    // TODO this might cause GC so perhaps we can return
+    // vec(edge,trans) only if it intersects or will intersect?
     var res = {
       intersect: true,
       willIntersect: true
@@ -203,13 +204,14 @@ var poly = module.exports = {
     var translationAxis = vec.make();
     var nearestEdge = vec.make();
     var axis = vec.make()
-    var cA, cB, cD;
     var iA = vec.make();
     var iB = vec.make();
+    var cA, cB, cD;
 
     // loop through all edges of both polygons
     for(var i=0; i < (a.length+b.length); i++){
-      var edge = i < a.length ? a.edges[i] : b.edges[i-a.length]
+      var e = i < a.length ? i : i-a.length
+      var edge = i < a.length ? a.edges[e] : b.edges[e]
 
       vec.perp(edge,axis)
       vec.norm(axis,axis)
@@ -243,7 +245,7 @@ var poly = module.exports = {
       if( iD < minIntervalDistance ){
         minIntervalDistance = iD;
         vec.copy(edge, nearestEdge);
-        vec.copy(axis,translationAxis);
+        vec.copy(axis, translationAxis);
 
         cA = cA || poly.centroid(a)
         cB = cB || poly.centroid(b)
