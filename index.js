@@ -13,6 +13,8 @@ function Poly(){
 
 var poly = module.exports = {
 
+  verbose: true,
+
   make: function(){
     var p = poly.alloc();
     if( arguments.length ){
@@ -29,7 +31,7 @@ var poly = module.exports = {
         , u = unallocated.length - i;
       totalAllocated = (totalAllocated || 64) * 2; // double the size (128>256>512 etc)
       allocated.length = totalAllocated;
-      console.warn('poly alloc',totalAllocated)
+      poly.verbose && console.warn('poly alloc',totalAllocated)
       while(i < totalAllocated){
         var p = new Poly();
         unallocated[u+i] = p;
