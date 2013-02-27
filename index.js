@@ -167,9 +167,13 @@ var poly = module.exports = {
     return o;
   },
 
-  aabb: function(p){
+  aabb: function(p,o){
     // [t,r,b,l]
-    var aabb = [Infinity,-Infinity,-Infinity,Infinity]
+    var aabb = o || [0,0,0,0]
+    aabb[0] =  Infinity;
+    aabb[1] = -Infinity;
+    aabb[2] = -Infinity;
+    aabb[3] =  Infinity;
     for(var j=0; j < p.length; j++){
       var v = p.vertices[j];
       if( v[1] < aabb[0] ) aabb[0] = v[1] // t
