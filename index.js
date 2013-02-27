@@ -153,10 +153,11 @@ var poly = module.exports = {
 
   transform: function(p,mat,o){
     o = o || p
-    for(var j=0; j < p.length; j++)
+    for(var j=0; j < p.length; j++){
       vec.transform(p.vertices[j],mat,o.vertices[j]);
-    // TODO this won't transform the edges. (which is ok if only translate is used)
-    // TODO and this also will not make a functional `o`
+      vec.transform(p.edges[j],mat,o.edges[j]);
+    }
+    // TODO this will not make a functional `o` (should use poly.add()/poly.close())
     return o;
   },
 
