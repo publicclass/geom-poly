@@ -198,13 +198,12 @@ var poly = module.exports = {
   // `v` is the relative velocity of the polygons (ie. velA - velB)
   // returns a collision info object:
   //    { intersect: Bool, willIntersect: Bool, nearestEdge: vec, minTranslationVector: vec}
-  collides: function(a,b,v){
+  collides: function(a,b,v,o){
     // TODO this might cause GC so perhaps we can return
     // vec(edge,trans) only if it intersects or will intersect?
-    var res = {
-      intersect: true,
-      willIntersect: true
-    }
+    var res = o || {};
+    res.intersect = true,
+    res.willIntersect = true
 
     v = v || vec.make()
     var minIntervalDistance = Infinity;
