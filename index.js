@@ -223,7 +223,8 @@ var poly = module.exports = {
       project(b,axis,iB)
 
       // are they currently intersecting?
-      if( intervalDistance(iA,iB) > 0 ){
+      var iD = intervalDistance(iA,iB);
+      if( iD >= 0 ){
         res.intersect = false;
       }
 
@@ -235,8 +236,8 @@ var poly = module.exports = {
         iA[1] += vProj;
       }
 
-      var iD = intervalDistance(iA,iB);
-      if( iD > 0 ){
+      iD = intervalDistance(iA,iB);
+      if( iD >= 0 ){
         res.willIntersect = false;
       }
 
