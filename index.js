@@ -227,19 +227,21 @@ var poly = module.exports = {
 
       // will they intersect?
       var vProj = vec.dot(axis,v);
-      if( vProj < 0 )
+      if( vProj < 0 ){
         iA[0] += vProj;
-      else
+      } else {
         iA[1] += vProj;
+      }
 
       var iD = intervalDistance(iA,iB);
       if( iD > 0 ){
         res.willIntersect = false;
       }
 
-      // no intersection will and won't happen
-      if( !res.intersect && !res.willIntersect )
+      // no intersection is and won't happen
+      if( !res.intersect && !res.willIntersect ){
         break;
+      }
 
       // find out if it's the closest one
       iD = Math.abs(iD);
@@ -251,8 +253,9 @@ var poly = module.exports = {
         cA = cA || poly.centroid(a)
         cB = cB || poly.centroid(b)
         cD = vec.sub(cA, cB, cD);
-        if( vec.dot(cD, translationAxis) < 0 )
+        if( vec.dot(cD, translationAxis) < 0 ){
           vec.neg(translationAxis,translationAxis)
+        }
       }
     }
 
