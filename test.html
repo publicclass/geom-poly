@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf8'>
+    <title>geom-poly test</title>
+    <link rel="stylesheet" type="text/css" href="node_modules/mocha/mocha.css">
+  </head>
+  <body>
+    <div id='mocha'></div>
+    <script src='node_modules/mocha/mocha.js'></script>
+    <script src='node_modules/expect.js/expect.js'></script>
+    <script src='build/build.js'></script>
+    <script src='test/draw.js'></script>
+    <script>mocha.setup('bdd')</script>
+    <script src='test/test.collides.js'></script>
+    <script>mocha.run()</script>
+  </body>
+</html>
