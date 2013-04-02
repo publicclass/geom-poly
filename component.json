@@ -2,7 +2,7 @@
   "name": "geom-poly",
   "repo": "publicclass/geom-poly",
   "description": "A collection of terse, efficient polygon tools.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "keywords": [],
   "dependencies": {
     "publicclass/geom-vec": "*"
