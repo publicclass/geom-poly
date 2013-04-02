@@ -29,12 +29,18 @@
   "testling": {
     "harness": "mocha",
     "files": "test/*.js",
-    "browsers": {
-      "ie": [ 8, 9 ],
-      "firefox": [ 13 ],
-      "chrome": [ 20 ],
-      "safari": [ 5.1 ],
-      "opera": [ 12 ]
-    }
+    "browsers": [
+      "iexplore/8.0",
+      "iexplore/9.0",
+      "iexplore/10.0",
+      "chrome/20.0",
+      "chrome/25.0",
+      "chrome/canary",
+      "firefox/18",
+      "firefox/19",
+      "iphone/6.0",
+      "ipad/6.0",
+      "safari/6.0"
+    ]
   }
 }
