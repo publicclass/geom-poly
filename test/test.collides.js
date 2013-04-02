@@ -206,8 +206,8 @@ describe('geom-poly',function(){
       var c = poly.collides(a,b,v)
       // console.log(a)
       // console.log(c)
-      console.assert(c.willIntersect === false)
-      console.assert(c.intersect === false)
+      expect(c.willIntersect).to.be.false
+      expect(c.intersect).to.be.false
 
     })
 
@@ -249,8 +249,8 @@ describe('geom-poly',function(){
       var c = poly.collides(a,b,v)
 
       // console.log(c)
-      console.assert(c.willIntersect === false)
-      console.assert(c.intersect === false)
+      expect(c.willIntersect).to.be.false
+      expect(c.intersect).to.be.false
     })
   })
 })
