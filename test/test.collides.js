@@ -1,5 +1,5 @@
-var poly = require(window ? 'geom-poly' : '../')
-  , vec = require(window ? 'publicclass-geom-vec' : 'geom-vec')
+var poly = require(typeof window != 'undefined' ? 'geom-poly' : '../')
+  , vec = require(typeof window != 'undefined' ? 'publicclass-geom-vec' : 'geom-vec')
   , expect = expect || require('expect.js');
 
 describe('geom-poly',function(){
@@ -516,9 +516,18 @@ describe('geom-poly',function(){
 })
 
 function createDraw(){
-  var cnv = document.createElement('canvas');
-  var ctx = cnv.getContext('2d');
-  var suite = document.querySelector('#mocha .suite .suite ul');
-  suite.appendChild(cnv)
-  return new Draw(ctx)
+  if( typeof window != 'undefined' ){
+    var cnv = document.createElement('canvas');
+    var ctx = cnv.getContext('2d');
+    var suite = document.querySelector('#mocha .suite .suite ul');
+    suite.appendChild(cnv)
+    return new Draw(ctx)
+  } else {
+    var draw = {
+      poly: function(){return draw},
+      fill: function(){return draw},
+      stroke: function(){return draw}
+    };
+    return draw;
+  }
 }
