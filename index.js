@@ -140,15 +140,13 @@ var poly = module.exports = {
   },
 
   rotate: function(p,theta,o){
-    o = o || poly.make()
     // TODO
-    return o;
+    throw new Error('rotate not implemented')
   },
 
   scale: function(p,theta,o){
-    o = o || poly.make()
     // TODO
-    return o;
+    throw new Error('scale not implemented')
   },
 
   transform: function(p,mat,o){
@@ -162,9 +160,8 @@ var poly = module.exports = {
   },
 
   convexHull: function(p,o){
-    o = o || poly.make()
     // TODO
-    return o;
+    throw new Error('convexHull not implemented')
   },
 
   aabb: function(p,o){
@@ -190,7 +187,7 @@ var poly = module.exports = {
   // at i and the normal of the edge at n
   intersects: function(p,a,b,i,n){
     // TODO
-
+    throw new Error('intersects not implemented')
   },
 
   // http://www.codeproject.com/Articles/15573/2D-Polygon-Collision-Detection
@@ -199,8 +196,6 @@ var poly = module.exports = {
   // returns a collision info object:
   //    { intersect: Bool, willIntersect: Bool, nearestEdge: vec, minTranslationVector: vec}
   collides: function(a,b,v,o){
-    // TODO this might cause GC so perhaps we can return
-    // vec(edge,trans) only if it intersects or will intersect?
     var res = o || {};
     res.intersect = true,
     res.willIntersect = true
