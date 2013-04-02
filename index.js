@@ -197,8 +197,10 @@ var poly = module.exports = {
   //    { intersect: Bool, willIntersect: Bool, nearestEdge: vec, minTranslationVector: vec}
   collides: function(a,b,v,o){
     var res = o || {};
-    res.intersect = true,
-    res.willIntersect = true
+    res.intersect = true;
+    res.willIntersect = true;
+    res.minTranslationVector = null;
+    res.nearestEdge = null;
 
     v = v || vec.make()
     var minIntervalDistance = Infinity;
