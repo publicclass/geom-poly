@@ -284,16 +284,16 @@ var poly = module.exports = {
 // `i` (interval) will be [min,max]
 // TODO should this be exposed as poly.project()?
 function project(p,axis,i){
-  var dot = vec.dot(axis,p.vertices[0])
   i = i || vec.make();
-  i[0] = dot
-  i[1] = dot
+  i[0] =  Infinity;
+  i[1] = -Infinity;
   for(var j=0; j < p.length; j++){
-    dot = vec.dot(axis,p.vertices[j])
-    if( dot < i[0] )
+    var dot = vec.dot(axis,p.vertices[j])
+    if( dot < i[0] ){
       i[0] = dot;
-    else if( dot > i[1] )
+    } else if( dot > i[1] ){
       i[1] = dot;
+    }
   }
   return i
 }
