@@ -241,11 +241,6 @@ var poly = module.exports = {
         res.willIntersect = false;
       }
 
-      // no intersection is and won't happen
-      if( !res.intersect && !res.willIntersect ){
-        break;
-      }
-
       // find out if it's the closest one
       iD = Math.abs(iD);
       if( iD < minIntervalDistance ){
@@ -260,6 +255,12 @@ var poly = module.exports = {
           vec.neg(translationAxis,translationAxis)
         }
       }
+
+      // no intersection is and won't happen
+      if( !res.intersect && !res.willIntersect ){
+        break;
+      }
+
     }
 
     // the minimum translation vector can
