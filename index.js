@@ -281,6 +281,12 @@ var poly = module.exports = {
     vec.free(cD)
     vec.free(axis)
 
+    // free `v` if it wasn't passed in as
+    // an argument
+    if( !arguments[2] ){
+      vec.free(v);
+    }
+
     return res;
   }
 
