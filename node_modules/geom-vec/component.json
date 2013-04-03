@@ -1,0 +1,13 @@
+{
+  "name": "geom-vec",
+  "repo": "publicclass/geom-vec",
+  "description": "A collection of terse, efficient vector tools.",
+  "version": "0.1.0",
+  "keywords": ["geometry", "vector", "geom", "vec"],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ]
+}
