@@ -10,10 +10,11 @@ describe('geom-poly',function(){
       draw = createDraw()
     })
     afterEach(function(){
-      // append the canvas after the results
-      //
-      var suite = document.querySelector('#mocha .suite .test:last-child');
-      suite.appendChild(draw.cnv)
+      if( typeof window != 'undefined' ){
+        // append the canvas after the results
+        var suite = document.querySelector('#mocha .suite .test:last-child');
+        suite.appendChild(draw.cnv)
+      }
     })
 
     /**
