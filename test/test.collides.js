@@ -1,14 +1,8 @@
-try {
-// component
-var poly = require('geom-poly')
-  , vec = require('publicclass-geom-vec')
+var isNode = typeof __dirname != 'undefined';
+
+var poly = require(isNode ? '../' : 'geom-poly')
+  , vec = require(isNode ? 'geom-vec' : 'publicclass-geom-vec')
   , expect = expect || require('expect.js');
-} catch(e){
-// node/browserify
-var poly = require('../')
-  , vec = require('geom-vec')
-  , expect = expect || require('expect.js');
-}
 
 describe('geom-poly',function(){
 
