@@ -17,6 +17,7 @@ describe('geom-poly',function(){
         var suite = document.querySelector('#mocha .suite .test:last-child');
         suite.appendChild(draw.cnv)
       }
+      console.log('')
     })
 
     /**
@@ -662,6 +663,42 @@ describe('geom-poly',function(){
 
       poly.translate(a,av[0],av[1])
       draw.poly(a).stroke('lightblue')
+    })
+
+    /**
+     *
+     *   +---B---+ v = 0,0
+     *   |       |
+     *   | +-A-+ | v = 0,0
+     *   | |   | |
+     *   | |   | |
+     *   | +---+ |
+     *   +-------+
+     */
+
+    it('should intersect when contained',function(){
+      var b = poly.make(
+        10,10,
+        10,60,
+        60,60,
+        60,10
+      )
+
+      var a = poly.make(
+        30,30,
+        30,50,
+        50,50,
+        50,30
+      )
+
+      var c = poly.collides(a,b)
+
+      // console.log(c)
+      draw.poly(b).stroke('red')
+      draw.poly(a).stroke('blue')
+
+      expect(c.willIntersect).to.equal(true)
+      expect(c.intersect).to.equal(true)
     })
   })
 })
