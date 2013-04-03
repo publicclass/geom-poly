@@ -699,13 +699,9 @@ var poly = module.exports = {
       project(a,axis,iA)
       project(b,axis,iB)
 
-      console.log('axis',axis)
-      console.log('edge',edge)
-
-      // do they intersect?
+      // are they currently intersecting?
       var iD = intervalDistance(iA,iB);
       if( iD >= 0 ){
-        console.log('does not intersect',iD)
         res.intersect = false;
       }
 
@@ -719,15 +715,12 @@ var poly = module.exports = {
 
       iD = intervalDistance(iA,iB);
       if( iD >= 0 ){
-        console.log('will not intersect',iD,v,axis)
         res.willIntersect = false;
-      } else {
-        res.willIntersect = true;
       }
 
-      // no intersection does and will not happen
+      // no intersection is and won't happen
       if( !res.intersect && !res.willIntersect ){
-        // break;
+        break;
       }
 
       // find out if it's the closest one
@@ -787,7 +780,8 @@ function project(p,axis,i){
     var dot = vec.dot(axis,p.vertices[j])
     if( dot < i[0] ){
       i[0] = dot;
-    } else if( dot > i[1] ){
+    }
+    if( dot > i[1] ){
       i[1] = dot;
     }
   }
