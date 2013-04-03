@@ -1,6 +1,14 @@
-var poly = require(typeof window != 'undefined' ? 'geom-poly' : '../')
-  , vec = require(typeof window != 'undefined' ? 'publicclass-geom-vec' : 'geom-vec')
+try {
+// component
+var poly = require('geom-poly')
+  , vec = require('publicclass-geom-vec')
   , expect = expect || require('expect.js');
+} catch(e){
+// node/browserify
+var poly = require('../')
+  , vec = require('geom-vec')
+  , expect = expect || require('expect.js');
+}
 
 describe('geom-poly',function(){
 
