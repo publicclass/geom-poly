@@ -397,7 +397,7 @@ describe('geom-poly',function(){
       poly.translate(b,bv[0],bv[1])
       draw.poly(b).stroke('pink')
 
-      console.log(c)
+      // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
     })
@@ -483,7 +483,7 @@ describe('geom-poly',function(){
       draw.poly(a).stroke('blue')
       draw.poly(b).stroke('red')
 
-      console.log(c)
+      // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(true)
     })
@@ -521,7 +521,7 @@ describe('geom-poly',function(){
       draw.poly(a).stroke('blue')
       draw.poly(b).stroke('red')
 
-      console.log(c)
+      // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(true)
     })
@@ -648,16 +648,16 @@ describe('geom-poly',function(){
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      console.log(c)
+      // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
 
       var v = vec.sub(bv,av)
       var c = poly.collides(b,a,v)
-      console.log(c)
 
       // goes both ways
       // (as long as relative velocity is calculated right)
+      // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
 
