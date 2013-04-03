@@ -303,7 +303,8 @@ function project(p,axis,i){
     var dot = vec.dot(axis,p.vertices[j])
     if( dot < i[0] ){
       i[0] = dot;
-    } else if( dot > i[1] ){
+    }
+    if( dot > i[1] ){
       i[1] = dot;
     }
   }
