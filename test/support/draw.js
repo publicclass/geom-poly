@@ -1,8 +1,9 @@
 var poly = require('geom-poly')
   , vec = require('publicclass-geom-vec');
 
-function Draw(ctx){
-  this.ctx = ctx;
+function Draw(cnv){
+  this.cnv = cnv;
+  this.ctx = cnv.getContext('2d');
 }
 
 Draw.prototype = {

@@ -9,6 +9,12 @@ describe('geom-poly',function(){
     beforeEach(function(){
       draw = createDraw()
     })
+    afterEach(function(){
+      // append the canvas after the results
+      //
+      var suite = document.querySelector('#mocha .suite .test:last-child');
+      suite.appendChild(draw.cnv)
+    })
 
     /**
      * Intersection on two axis' with no
@@ -659,11 +665,7 @@ describe('geom-poly',function(){
 
 function createDraw(){
   if( typeof window != 'undefined' ){
-    var cnv = document.createElement('canvas');
-    var ctx = cnv.getContext('2d');
-    var suite = document.querySelector('#mocha .suite .suite ul');
-    suite.appendChild(cnv)
-    return new Draw(ctx)
+    return new Draw(document.createElement('canvas'))
   } else {
     var draw = {
       poly: function(){return draw},
