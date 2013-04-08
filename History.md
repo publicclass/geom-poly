@@ -1,4 +1,18 @@
 
+0.3.1 / 2013-04-08
+==================
+
+  * Optimized away modulo.
+  * Simplified area() to not use vec.cross().
+  * Expose project() as poly.project()
+  * Added some tests with a hexagon.
+  * Added radius() and radiusSq() which gives the radius between the centroid and the furthest away vertex.
+  * Added perimeter()
+  * Added reverse() which reverses the vertices in a polygon
+  * area() should always be a positive value.
+  * Return the modified polygon instead of the poly module for add() and close().
+  * Added some unit tests for area() and centroid().
+
 0.3.0 / 2013-04-03
 ==================
 
