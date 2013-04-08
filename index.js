@@ -329,6 +329,7 @@ var poly = module.exports = {
 
 
 // `i` (interval) will be [min,max]
+// `axis` (vec) will be [x,y]
 // TODO should this be exposed as poly.project()?
 function project(p,axis,i){
   i = i || vec.make();
