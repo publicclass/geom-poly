@@ -132,8 +132,9 @@ var poly = module.exports = {
   translate: function(p,x,y,o){
     var t = vec.make(x,y)
     o = o || p;
-    for(var j=0; j < p.length; j++)
+    for(var j=0; j < p.length; j++){
       vec.add(p.vertices[j],t,o.vertices[j]);
+    }
     // TODO this will not make a functional `o` (should use poly.add()/poly.close())
     vec.free(t)
     return o;
