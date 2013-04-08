@@ -164,6 +164,15 @@ var poly = module.exports = {
     throw new Error('convexHull not implemented')
   },
 
+  reverse: function(p,o){
+    o = o || poly.make();
+    for(var i=p.length-1; i>=0; i--){
+      var v = p.vertices[i];
+      poly.add(o,v[0],v[1]);
+    }
+    return poly.close(o);
+  },
+
   aabb: function(p,o){
     // [t,r,b,l]
     var aabb = o || [0,0,0,0]
