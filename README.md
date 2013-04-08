@@ -16,12 +16,22 @@ A collection of terse polygon utilities. A part of [geom](https://github.com/pub
 ## Example
 
     var poly = require('geom-poly');
+
+    // in steps
     var rect = poly.make()
     poly.add(rect,10,10)
     poly.add(rect,20,10)
     poly.add(rect,20,20)
     poly.add(rect,10,20)
     poly.close(rect)
+
+    // directly in make() (will auto-close)
+    var rect = poly.make(
+        10,10,
+        20,10,
+        20,20,
+        10,20
+    )
 
 
 ## API
