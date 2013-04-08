@@ -151,7 +151,11 @@ var poly = module.exports = {
       c[1] += (v[1] + q[1]) * x
     }
     var b = 1 / (6 * a);
-    return vec.smul(c,b,c);
+    vec.smul(c,b,c)
+    if( c[0] < 0 ){
+      vec.neg(c,c)
+    }
+    return c;
   },
 
   translate: function(p,x,y,o){
