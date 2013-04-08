@@ -113,6 +113,15 @@ var poly = module.exports = {
     return Math.abs(sum / 2);
   },
 
+  perimeter: function(p){
+    var sum = 0;
+    for(var i=0; i < p.edges.length; i++){
+      var e = p.edges[i];
+      sum += vec.len(e); // TODO optimize away sqrt?
+    }
+    return sum;
+  },
+
   centroid: function(p){
     var a = poly.area(p) // TODO maybe accept area as an argument (in case it's cached?)
       , n = p.length
