@@ -87,7 +87,6 @@ describe('geom-poly',function(){
         5,12
       )
       p = poly.reverse(p)
-      console.log(p)
       expect(poly.centroid(p)).to.eql([9.8,8.5])
       poly.free(p)
     })
@@ -102,7 +101,6 @@ describe('geom-poly',function(){
         459,369
       )
       p = poly.reverse(p)
-      console.log(p)
       expect(poly.centroid(p)).to.eql([500,457])
       poly.free(p)
     })
