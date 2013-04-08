@@ -121,12 +121,12 @@ var poly = module.exports = {
     for(var i=0; i < n; i++){
       var v = P[i]
         , q = P[(i+1)%n]
-        , ai = vec.cross(v,q);
-      c[0] += (v[0] + q[0]) * ai
-      c[1] += (v[1] + q[1]) * ai
+        , x = vec.cross(v,q);
+      c[0] += (v[0] + q[0]) * x
+      c[1] += (v[1] + q[1]) * x
     }
-    var b = 1 / (6 * a);
-    return vec.mul(c,[b,b],c);
+    var b = 1 / (6 * -a);
+    return vec.smul(c,b,c);
   },
 
   translate: function(p,x,y,o){
