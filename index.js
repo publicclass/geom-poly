@@ -104,13 +104,14 @@ var poly = module.exports = {
 
   area: function(p){
     var n = p.vertices.length
-      , sum = 0;
+      , area = 0;
     for(var i=0; i < n; i++){
       var v = p.vertices[i];
       var q = p.vertices[(i+1)%n]; // TODO optimize away modulo
-      sum += vec.cross(q,v);
+      area += v[0] * q[1];
+      area -= v[1] * q[0];
     }
-    return Math.abs(sum / 2);
+    return Math.abs(area / 2);
   },
 
   perimeter: function(p){
