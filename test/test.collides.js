@@ -4,6 +4,8 @@ var poly = require(isNode ? '../' : 'geom-poly')
   , vec = require(isNode ? 'geom-vec' : 'publicclass-geom-vec')
   , expect = expect || require('expect.js');
 
+vec.verbose = poly.verbose = false;
+
 describe('geom-poly',function(){
 
   describe('collides()',function(){
@@ -17,7 +19,6 @@ describe('geom-poly',function(){
         var suite = document.querySelector('#mocha .suite .test:last-child');
         suite.appendChild(draw.cnv)
       }
-      console.log('')
     })
 
     /**
@@ -717,11 +718,7 @@ function createDraw(){
 }
 
 function invert(p){
-  var q = poly.make();
-  for(var i=p.length-1; i>=0; i--){
-    var v = p.vertices[i];
-    poly.add(q,v[0],v[1]);
-  }
-  poly.close(q)
+  var q = poly.reverse(p);
+  poly.free(p)
   return q;
 }
