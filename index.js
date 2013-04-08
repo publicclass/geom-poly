@@ -105,9 +105,9 @@ var poly = module.exports = {
   area: function(p){
     var n = p.vertices.length
       , area = 0;
-    for(var i=0; i < n; i++){
+    for(var i=0, j=n-1; i < n; j=i, i++){
       var v = p.vertices[i];
-      var q = p.vertices[(i+1)%n]; // TODO optimize away modulo
+      var q = p.vertices[j];
       area += v[0] * q[1];
       area -= v[1] * q[0];
     }
@@ -143,14 +143,14 @@ var poly = module.exports = {
       , n = p.length
       , P = p.vertices
       , c = vec.make();
-    for(var i=0; i < n; i++){
+    for(var i=0, j=n-1; i < n; j=i, i++){
       var v = P[i]
-        , q = P[(i+1)%n]
+        , q = P[j]
         , x = vec.cross(v,q);
       c[0] += (v[0] + q[0]) * x
       c[1] += (v[1] + q[1]) * x
     }
-    var b = 1 / (6 * -a);
+    var b = 1 / (6 * a);
     return vec.smul(c,b,c);
   },
 

@@ -166,7 +166,7 @@ describe('geom-poly',function(){
     })
 
     it('should give the right area',function(){
-      expect(poly.area(p)).to.equal(374.12297443487745)
+      expect(poly.area(p)).to.equal(374.1229744348775)
     })
 
     it('should give the right centroid',function(){
