@@ -145,6 +145,7 @@ describe('geom-poly',function(){
     })
   })
 
+  // http://wolfr.am/16HAB0r
   describe('a generated hexagon with 12px edge length',function(){
     var p = poly.make()
     var a = 2 * Math.PI / 6
