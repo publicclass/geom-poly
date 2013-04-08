@@ -1,27 +1,21 @@
 
 # geom-poly
 
-## API
+[![Build Status](https://travis-ci.org/publicclass/geom-poly.png)](https://travis-ci.org/publicclass/geom-poly)
 
-    poly.make([x1,y1,x2,y2...])
-    poly.convexHull(a[,c])
-    poly.add(a,x,y[,c])
-    poly.close(a)
-    poly.inside(a,x,y) > Boolean
-    poly.area(a) > Number
-    poly.centroid(a) > vec
-    poly.translate(a,x,y[,c]) // or just transform?
-    poly.rotate(a,x,y[,c])    // or just transform?
-    poly.scale(a,x,y[,c])     // or just transform?
-    poly.transform(a,mat[,c])
-    poly.aabb(a[,c]) > rect // or a poly-array?
+A collection of terse polygon utilities. A part of [geom](https://github.com/publicclass/geom).
 
-    // a->b goes through an edge of p? if so set the intersection
-    // at i and the normal of the edge at n
-    poly.intersects(p,a,b,i,n)
 
-    poly.collides(a,b,v) > {}
+## Features
 
+  * __Memory managed__ each utility has a pool of instances accessable using `_X_.make()` and `_X_.free()`. If you don't need pooled instances, simply pass in your own object instead.
+
+  * __State less__ no state is kept within the utilities, it's up to you.
+
+
+## Example
+
+    var poly = require('geom-poly');
     var rect = poly.make()
     poly.add(rect,10,10)
     poly.add(rect,20,10)
@@ -29,6 +23,19 @@
     poly.add(rect,10,20)
     poly.close(rect)
 
-    var rayOrigin = vec.make(5,5)
-      , ray = vec.make()
-    poly.project(p,rayOrigin,ray)
+
+## API
+
+### poly.make([x1,y1,x2,y2...])
+### poly.add(a,x,y[,c])
+### poly.close(a)
+### poly.area(a)
+### poly.centroid(a)
+### poly.translate(a,x,y[,c])
+### poly.transform(a,mat[,c])
+### poly.aabb(a[,c])
+### poly.collides(a,b,v)
+
+## License
+
+  MIT
