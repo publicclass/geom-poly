@@ -73,7 +73,7 @@ var poly = module.exports = {
     }
     p.vertices.push(v);
     p.length++;
-    return poly;
+    return p;
   },
 
   close: function(p){
@@ -84,7 +84,7 @@ var poly = module.exports = {
       var v = p.vertices[0];
       p.edges.push(vec.sub(v,l));
     }
-    return poly;
+    return p;
   },
 
   // source: http://alienryderflex.com/polygon/
