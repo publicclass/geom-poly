@@ -253,8 +253,8 @@ var poly = module.exports = {
       vec.perp(edge,axis)
       vec.norm(axis,axis)
 
-      project(a,axis,iA)
-      project(b,axis,iB)
+      poly.project(a,axis,iA)
+      poly.project(b,axis,iB)
 
       // are they currently intersecting?
       var iD = intervalDistance(iA,iB);
@@ -323,29 +323,29 @@ var poly = module.exports = {
     }
 
     return res;
+  },
+
+
+  // `i` (interval) will be [min,max]
+  // `axis` (vec) will be [x,y]
+  project: function(p,axis,i){
+    i = i || vec.make();
+    i[0] =  Infinity;
+    i[1] = -Infinity;
+    for(var j=0; j < p.length; j++){
+      var dot = vec.dot(axis,p.vertices[j])
+      if( dot < i[0] ){
+        i[0] = dot;
+      }
+      if( dot > i[1] ){
+        i[1] = dot;
+      }
+    }
+    return i;
   }
 
 }
 
-
-// `i` (interval) will be [min,max]
-// `axis` (vec) will be [x,y]
-// TODO should this be exposed as poly.project()?
-function project(p,axis,i){
-  i = i || vec.make();
-  i[0] =  Infinity;
-  i[1] = -Infinity;
-  for(var j=0; j < p.length; j++){
-    var dot = vec.dot(axis,p.vertices[j])
-    if( dot < i[0] ){
-      i[0] = dot;
-    }
-    if( dot > i[1] ){
-      i[1] = dot;
-    }
-  }
-  return i
-}
 
 
 function intervalDistance(a,b){
