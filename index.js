@@ -122,6 +122,21 @@ var poly = module.exports = {
     return sum;
   },
 
+  radiusSq: function(p,c){
+    var r = 0;
+    c = c || poly.centroid(p);
+    for(var i=0; i < p.length; i++){
+      var v = p.vertices[i];
+      var d = vec.distSq(v,c);
+      if( d > r ) r = d;
+    }
+    return r;
+  },
+
+  radius: function(p,c){
+    return Math.sqrt(poly.radiusSq(p,c));
+  },
+
   centroid: function(p){
     var a = poly.area(p) // TODO maybe accept area as an argument (in case it's cached?)
       , n = p.length
