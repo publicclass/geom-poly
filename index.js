@@ -106,11 +106,11 @@ var poly = module.exports = {
     var n = p.vertices.length
       , sum = 0;
     for(var i=0; i < n; i++){
-      var v = p.vertices[i]
-      var q = p.vertices[(i+1)%n]; // TODO optimize away modulo plz
-      sum += v[0] * q[1] - q[0] * v[1];
+      var v = p.vertices[i];
+      var q = p.vertices[(i+1)%n]; // TODO optimize away modulo
+      sum += vec.cross(q,v);
     }
-    return .5 * sum;
+    return Math.abs(sum / 2);
   },
 
   centroid: function(p){
