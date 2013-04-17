@@ -159,12 +159,16 @@ var poly = module.exports = {
   },
 
   translate: function(p,x,y,o){
+    if( o && (o.length !== p.length) ){
+      // TODO this will not make a functional `o` (should use poly.add()/poly.close())
+      throw new Error('translate to unequal polys are not supported')
+      return;
+    }
     var t = vec.make(x,y)
     o = o || p;
     for(var j=0; j < p.length; j++){
       vec.add(p.vertices[j],t,o.vertices[j]);
     }
-    // TODO this will not make a functional `o` (should use poly.add()/poly.close())
     vec.free(t)
     return o;
   },
@@ -180,12 +184,16 @@ var poly = module.exports = {
   },
 
   transform: function(p,mat,o){
+    if( o && (o.length !== p.length) ){
+      // TODO this will not make a functional `o` (should use poly.add()/poly.close())
+      throw new Error('transform to unequal polys are not supported')
+      return;
+    }
     o = o || p
     for(var j=0; j < p.length; j++){
       vec.transform(p.vertices[j],mat,o.vertices[j]);
       vec.transform(p.edges[j],mat,o.edges[j]);
     }
-    // TODO this will not make a functional `o` (should use poly.add()/poly.close())
     return o;
   },
 
@@ -194,8 +202,8 @@ var poly = module.exports = {
     throw new Error('convexHull not implemented')
   },
 
-  reverse: function(p,o){
-    o = o || poly.make();
+  reverse: function(p){
+    var o = poly.make();
     for(var i=p.length-1; i>=0; i--){
       var v = p.vertices[i];
       poly.add(o,v[0],v[1]);
