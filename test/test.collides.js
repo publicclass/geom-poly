@@ -730,6 +730,11 @@ describe('geom-poly',function(){
       expect(c).to.have.property('minTranslationVector').eql([10,0])
       expect(c).to.have.property('nearestEdge').eql(a.edges[0])
 
+      var t = c.minTranslationVector
+      poly.translate(a,t[0],t[1])
+      poly.translate(a,av[0],av[1])
+      draw.poly(a).stroke('lightblue')
+
       var v = vec.sub(bv,av)
       var c = poly.collides(b,a,v)
 
@@ -739,8 +744,6 @@ describe('geom-poly',function(){
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
 
-      poly.translate(a,av[0],av[1])
-      draw.poly(a).stroke('lightblue')
     })
 
     /**
