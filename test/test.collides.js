@@ -276,6 +276,10 @@ describe('geom-poly',function(){
       expect(c).to.have.property('minTranslationVector').eql([0,-10])
       expect(c).to.have.property('nearestEdge').eql(a.edges[1])
 
+      // make a copy of a to test the bisection with below
+      // (since we're moving a around)
+      var d = poly.copy(a)
+
       var t = c.minTranslationVector
       poly.translate(a,av[0],av[1])
       poly.translate(a,t[0],t[1])
@@ -285,17 +289,40 @@ describe('geom-poly',function(){
       //      to A while it still "flies through". I'd like to be able to know
       //      "when" it would intersect so I can avoid it.
 
+
+      // testing to 'multisample' by stepping 1/10 of the velocity at a time
+      // var steps = 100;
+      // for(var i=0; i<steps; i++){
+      //   poly.translate(d,av[0]/steps*i,av[1]/steps*1)
+      //   c = poly.collides(d,b,v)
+      //   if( c.intersect )
+      //     break;
+      // }
+      // var t = c.minTranslationVector;
+      // poly.translate(d,t[0],t[1])
+      // console.log(d)
+      // draw.poly(d).stroke('orange')
+
+
       // TODO also test a 'bisect multisample' where it steps v*0.5 and if it doesn't
       //      hit it tries v*0.75 or if it hits it tries v*0.25 etc. and have
       //      a sample rate which is the maximum steps taken.
-      // testing to 'multisample' by stepping 1/10 of the velocity at a time
-      // var steps = 10;
-      // for(var i=0; i<steps; i++){
-      //   poly.translate(b,bv[0]/steps,0)
-      //   var c = poly.collides(a,b,v)
-      //   console.log(c)
-      //   if( c.intersect )
-      //     break;
+      // var attempts = 10;
+      // var z = vec.make() // zero velocity
+      // var n = vec.lerp(z,v,0.5); // start in the middle
+      // while(--attempts > 0){
+      //   poly.collides(d,b,n,c)
+      //   if( c.intersect ){
+      //     console.log('intersects',n)
+      //     // try a bit closer to d
+      //     vec.lerp(n,z,0.5,n)
+      //   } else if( c.willIntersect ){
+      //     console.log('will intersect',n)
+      //     // try a bit closer to b
+      //     vec.lerp(v,n,0.5,n)
+      //   } else {
+      //     console.log('no intersection',n)
+      //   }
       // }
     })
 
