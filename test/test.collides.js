@@ -51,11 +51,15 @@ describe('geom-poly',function(){
 
       draw.poly(b).stroke('red')
       draw.poly(a).stroke('blue')
+      draw.edge(a,1).stroke('gold')
 
       var v = vec.make()
       var c = poly.collides(a,b,v)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(true)
+
+      expect(c).to.have.property('minTranslationVector').eql([0,-10])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[1])
 
       // move A out of the way
       var t = c.minTranslationVector
@@ -67,6 +71,8 @@ describe('geom-poly',function(){
       // console.log(c)
       expect(c.willIntersect).to.equal(false)
       expect(c.intersect).to.equal(false)
+      expect(c).to.have.property('minTranslationVector').eql(null)
+      expect(c).to.have.property('nearestEdge').eql(null)
 
     })
 
@@ -105,13 +111,21 @@ describe('geom-poly',function(){
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(a,1).stroke('gold')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
 
+      expect(c).to.have.property('minTranslationVector').eql([0,-1])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[1])
+
+      var t = c.minTranslationVector
+      poly.translate(a,av[0],av[1])
+      poly.translate(a,t[0],t[1])
+      draw.poly(a).stroke('lightblue')
     })
 
     /**
@@ -148,13 +162,15 @@ describe('geom-poly',function(){
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(false)
       expect(c.intersect).to.equal(false)
 
+      expect(c).to.have.property('minTranslationVector',null)
+      expect(c).to.have.property('nearestEdge',null)
     })
 
 
@@ -193,20 +209,25 @@ describe('geom-poly',function(){
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
-
-      poly.translate(a,av[0],av[1])
-      draw.poly(a).stroke('lightblue')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(a,0).stroke('gold')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
 
+      expect(c).to.have.property('minTranslationVector').eql([-20,0])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[0])
+
       // TODO the minTranslationVector is now [-20,0] which will push B next
       //      to A while it still "flies through". I'd like to be able to know
       //      "when" it would intersect so I can avoid it.
 
+      var t = c.minTranslationVector
+      poly.translate(a,av[0],av[1])
+      poly.translate(a,t[0],t[1])
+      draw.poly(a).stroke('lightblue')
     })
 
 
@@ -236,25 +257,34 @@ describe('geom-poly',function(){
         90,40,
         90,30
       )
-      var av = vec.make(0,0)
-      var bv = vec.make(-100,0)
+      var av = vec.make(100,0)
+      var bv = vec.make(0,0)
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(a,1).stroke('gold')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
 
-      poly.translate(a,v[0],v[1])
+      expect(c).to.have.property('minTranslationVector').eql([0,-10])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[1])
+
+      var t = c.minTranslationVector
+      poly.translate(a,av[0],av[1])
+      poly.translate(a,t[0],t[1])
       draw.poly(a).stroke('lightblue')
 
       // TODO the minTranslationVector is now [0,-10] which will push B next
       //      to A while it still "flies through". I'd like to be able to know
       //      "when" it would intersect so I can avoid it.
 
+      // TODO also test a 'bisect multisample' where it steps v*0.5 and if it doesn't
+      //      hit it tries v*0.75 or if it hits it tries v*0.25 etc. and have
+      //      a sample rate which is the maximum steps taken.
       // testing to 'multisample' by stepping 1/10 of the velocity at a time
       // var steps = 10;
       // for(var i=0; i<steps; i++){
@@ -300,6 +330,8 @@ describe('geom-poly',function(){
       // console.log(c)
       expect(c.willIntersect).to.equal(false)
       expect(c.intersect).to.equal(false)
+      expect(c).to.have.property('minTranslationVector',null)
+      expect(c).to.have.property('nearestEdge',null)
 
       draw.poly(b).stroke('red')
       draw.poly(a).stroke('blue')
@@ -342,12 +374,14 @@ describe('geom-poly',function(){
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(false)
       expect(c.intersect).to.equal(false)
+      expect(c).to.have.property('minTranslationVector',null)
+      expect(c).to.have.property('nearestEdge',null)
 
       poly.translate(a,av[0],av[1])
       draw.poly(a).stroke('lightblue')
@@ -392,8 +426,9 @@ describe('geom-poly',function(){
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      draw.poly(a).stroke('blue')
-      draw.poly(b).stroke('red')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(a,0).stroke('gold')
 
       poly.translate(b,bv[0],bv[1])
       draw.poly(b).stroke('pink')
@@ -401,6 +436,9 @@ describe('geom-poly',function(){
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
+
+      expect(c).to.have.property('minTranslationVector').eql([-5,-5])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[0])
     })
 
     /**
@@ -440,15 +478,20 @@ describe('geom-poly',function(){
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(b,0).stroke('gold')
 
+      var t = c.minTranslationVector
+      poly.translate(a,t[0],t[1])
       poly.translate(a,av[0],av[1])
       draw.poly(a).stroke('lightblue')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
+      expect(c).to.have.property('minTranslationVector').eql([2.5,2.5])
+      expect(c).to.have.property('nearestEdge').eql(b.edges[0])
 
     })
 
@@ -483,10 +526,17 @@ describe('geom-poly',function(){
 
       draw.poly(a).stroke('blue')
       draw.poly(b).stroke('red')
+      draw.edge(a,1).stroke('gold')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(true)
+      expect(c).to.have.property('minTranslationVector').eql([-5,5])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[1])
+
+      var t = c.minTranslationVector
+      poly.translate(a,t[0],t[1])
+      draw.poly(a).stroke('lightblue')
     })
 
 
@@ -521,10 +571,17 @@ describe('geom-poly',function(){
 
       draw.poly(a).stroke('blue')
       draw.poly(b).stroke('red')
+      draw.edge(a,0).stroke('gold')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(true)
+      expect(c).to.have.property('minTranslationVector').eql([-5,-5])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[0])
+
+      var t = c.minTranslationVector
+      poly.translate(a,t[0],t[1])
+      draw.poly(a).stroke('lightblue')
     })
 
 
@@ -565,16 +622,21 @@ describe('geom-poly',function(){
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
-
-      poly.translate(a,av[0],av[1])
-      draw.poly(a).stroke('lightblue')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(b,1).stroke('gold')
 
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
 
+      expect(c).to.have.property('minTranslationVector').eql([-2.499999999999999,2.499999999999999])
+      expect(c).to.have.property('nearestEdge').eql(b.edges[1])
+
+      var t = c.minTranslationVector
+      poly.translate(a,t[0],t[1])
+      poly.translate(a,av[0],av[1])
+      draw.poly(a).stroke('lightblue')
     })
 
     /**
@@ -611,8 +673,16 @@ describe('geom-poly',function(){
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(true)
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(a,1).stroke('gold')
+
+      expect(c).to.have.property('minTranslationVector').eql([0,10])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[1])
+
+      var t = c.minTranslationVector
+      poly.translate(a,t[0],t[1])
+      draw.poly(a).stroke('lightblue')
     })
 
     /**
@@ -641,17 +711,21 @@ describe('geom-poly',function(){
         60,30
       )
 
-      draw.poly(b).stroke('red')
-      draw.poly(a).stroke('blue')
-
       var av = vec.make(-20,-5)
       var bv = vec.make(0,0)
       var v = vec.sub(av,bv)
       var c = poly.collides(a,b,v)
 
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(a,0).stroke('gold')
+
       // console.log(c)
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(false)
+
+      expect(c).to.have.property('minTranslationVector').eql([10,0])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[0])
 
       var v = vec.sub(bv,av)
       var c = poly.collides(b,a,v)
@@ -697,9 +771,17 @@ describe('geom-poly',function(){
       // console.log(c)
       draw.poly(b).stroke('red')
       draw.poly(a).stroke('blue')
+      draw.edge(a,1).stroke('gold')
 
       expect(c.willIntersect).to.equal(true)
       expect(c.intersect).to.equal(true)
+
+      expect(c).to.have.property('minTranslationVector').eql([0,30])
+      expect(c).to.have.property('nearestEdge').eql(a.edges[1])
+
+      var t = c.minTranslationVector
+      poly.translate(a,t[0],t[1])
+      draw.poly(a).stroke('lightblue')
     })
   })
 })

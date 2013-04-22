@@ -10,7 +10,7 @@ Draw.prototype = {
   clear: function(){
     this.ctx.clearRect(0,0,canvas.width,canvas.height)
   },
-  poly: function(p){
+  poly: function(p,d){
     this.ctx.beginPath();
     var v = p.vertices[0]
       , x = v[0]
@@ -48,6 +48,26 @@ Draw.prototype = {
     vec.free(c)
 
     return this;
+  },
+  edge: function(a,i){
+    var v = a.vertices[i]
+    var e = a.edges[i]
+    var S = [
+      v,
+      vec.add(v,e)
+    ]
+    this.line(S)
+    return this;
+  },
+  vel: function(p,v){
+    // draw centroid
+    var c = poly.centroid(p)
+    var S = [
+      c,
+      vec.add(c,v)
+    ]
+    vec.free(c)
+    return this.line(S);
   },
   line: function(S){
     var a = S[0], b = S[1];
