@@ -171,6 +171,9 @@ describe('geom-poly',function(){
 
       expect(c).to.have.property('minTranslationVector',null)
       expect(c).to.have.property('nearestEdge',null)
+
+      poly.translate(a,av[0],av[1])
+      draw.poly(a).stroke('lightblue')
     })
 
 
