@@ -796,7 +796,9 @@ function createDraw(){
     var draw = {
       poly: function(){return draw},
       fill: function(){return draw},
-      stroke: function(){return draw}
+      stroke: function(){return draw},
+      edge: function(){return draw},
+      vel: function(){return draw}
     };
     return draw;
   }
