@@ -12,6 +12,7 @@ describe('geom-poly',function(){
     var draw;
     beforeEach(function(){
       draw = createDraw()
+      draw.fill('black')
     })
     afterEach(function(){
       if( typeof window != 'undefined' ){

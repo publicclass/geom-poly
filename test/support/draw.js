@@ -4,6 +4,7 @@ var poly = require('geom-poly')
 function Draw(cnv){
   this.cnv = cnv;
   this.ctx = cnv.getContext('2d');
+  this.ctx.translate(50,10)
 }
 
 Draw.prototype = {
@@ -29,9 +30,9 @@ Draw.prototype = {
       this.ctx.lineTo(m[0]+n[0]*5,m[1]+n[1]*5)
 
       // draw index
-      this.ctx.font = '3px courier'
+      this.ctx.font = '10px courier'
       var t = this.ctx.measureText(i).width;
-      this.ctx.fillText(i,m[0]-t/2,m[1])
+      this.ctx.fillText(i,(m[0]+n[0]*10)-t/2,(m[1]+n[1]*10)+3)
 
       // free the vectors
       vec.free(n)
