@@ -846,7 +846,7 @@ describe('geom-poly',function(){
       )
 
       var av = vec.make(0,0)
-      var bv = vec.make(0,-65)
+      var bv = vec.make(0,-55)
       var v = vec.sub(bv,av)
       var c = poly.collides(b,a,v)
 
@@ -864,6 +864,9 @@ describe('geom-poly',function(){
       poly.translate(b,t[0],t[1])
       poly.translate(b,bv[0],bv[1])
       draw.poly(b).stroke('pink')
+
+      // NOTE: if bv[1] is >=60 the nearestEdge changes to
+      // 0 (left side) instead.
     })
   })
 })
