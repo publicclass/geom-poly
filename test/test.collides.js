@@ -817,6 +817,54 @@ describe('geom-poly',function(){
       poly.translate(a,t[0],t[1])
       draw.poly(a).stroke('lightblue')
     })
+
+
+    /**
+     *  +-A-+ v = 0,0
+     *  |   |
+     *  |   |
+     *  +---+
+     *
+     *  +-B-+ v = 0,-20
+     *  |   |
+     *  |   |
+     *  +---+
+     */
+    it('will intersect with equal width rects',function(){
+      var a = poly.make(
+        10,00,
+        10,60,
+        60,60,
+        60,00
+      )
+
+      var b = poly.make(
+        10,70,
+        10,120,
+        60,120,
+        60,70
+      )
+
+      var av = vec.make(0,0)
+      var bv = vec.make(0,-65)
+      var v = vec.sub(bv,av)
+      var c = poly.collides(b,a,v)
+
+      draw.poly(a).stroke('blue').vel(a,av).stroke('blue')
+      draw.poly(b).stroke('red').vel(b,bv).stroke('red')
+      draw.edge(b,1).stroke('gold')
+
+      expect(c.willIntersect).to.equal(true)
+      expect(c.intersect).to.equal(false)
+
+      expect(c).to.have.property('minTranslationVector').eql([0,45])
+      expect(c).to.have.property('nearestEdge').eql(b.edges[1])
+
+      var t = c.minTranslationVector
+      poly.translate(b,t[0],t[1])
+      poly.translate(b,bv[0],bv[1])
+      draw.poly(b).stroke('pink')
+    })
   })
 })
 
