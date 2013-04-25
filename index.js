@@ -190,10 +190,12 @@ var poly = module.exports = {
       return;
     }
     o = o || p
-    for(var j=0; j < p.length; j++){
-      vec.transform(p.vertices[j],mat,o.vertices[j]);
-      vec.transform(p.edges[j],mat,o.edges[j]);
+    var n = p.length;
+    for(var i=0, j=n-1; i < n; j=i, i++){
+      vec.transform(p.vertices[i],mat,o.vertices[i]);
+      vec.sub(p.vertices[i],p.vertices[j],o.edges[j])
     }
+    vec.sub(p.vertices[0],p.vertices[n-1],o.edges[n-1])
     return o;
   },
 
