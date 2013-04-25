@@ -7,7 +7,9 @@
   "dependencies": {
     "publicclass/geom-vec": "*"
   },
-  "development": {},
+  "development": {
+    "publicclass/geom-mat": "*"
+  },
   "license": "MIT",
   "scripts": [
     "index.js"
