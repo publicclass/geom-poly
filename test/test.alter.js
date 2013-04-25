@@ -204,6 +204,22 @@ describe('geom-poly',function(){
       expect(poly.aabb(rect)).to.eql([0,w+w/2,h,-w/2])
       draw.poly(rect).stroke('red')
     })
+
+    it('should scale an offset rect from center on x',function(){
+      var w = 20, h = 20, x = 10, y = 10;
+      var rect = makeRect(w,h,x,y)
+      expect(poly.aabb(rect)).to.eql([y,x+w,y+h,x])
+      draw.poly(rect).stroke('blue')
+
+      var m = mat.translate(-(x+w/2),0)
+      mat.scale(2,1,m)
+      mat.translate((x+w/2),0,m)
+
+      poly.transform(rect,m)
+
+      draw.poly(rect).stroke('red')
+      expect(poly.aabb(rect)).to.eql([y,x+w+w/2,y+h,x-w/2])
+    })
   })
 
 })
@@ -229,6 +245,13 @@ function invert(p){
   return q;
 }
 
-function makeRect(w,h){
-   return poly.make(0,h,w,h,w,0,0,0)
+function makeRect(w,h,x,y){
+  x = x || 0
+  y = y || 0
+  return poly.make(
+    x,y+h,
+    x+w,y+h,
+    x+w,y,
+    x,y
+  )
 }
