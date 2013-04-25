@@ -153,6 +153,20 @@ describe('geom-poly',function(){
 
       expect(poly.aabb(rect)).to.eql([-1,1,1,-1])
     })
+
+    it('should scale a rect from center on x',function(){
+      var rect = poly.make(0,1,1,1,1,0,0,0)
+
+      expect(poly.aabb(rect)).to.eql([0,1,1,0])
+
+      var m = mat.translate(-0.5,0)
+      mat.scale(2,1,m)
+      mat.translate(0.5,0,m)
+
+      poly.transform(rect,m)
+
+      expect(poly.aabb(rect)).to.eql([0,1.5,1,-0.5])
+    })
   })
 
 })
