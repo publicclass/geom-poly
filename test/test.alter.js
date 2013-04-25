@@ -68,105 +68,167 @@ describe('geom-poly',function(){
 
   describe('transform()',function(){
 
-    it('should scale a rect x2',function(){
-      var rect = poly.make(0,1,1,1,1,0,0,0)
+    var draw;
+    beforeEach(function(){
+      draw = createDraw()
+      draw.fill('black')
+    })
+    afterEach(function(){
+      if( typeof window != 'undefined' ){
+        // append the canvas after the results
+        var suite = document.querySelector('#mocha-report > .suite:last-child')
+          , test;
 
-      expect(poly.aabb(rect)).to.eql([0,1,1,0])
+        // find the last test
+        while( suite ){
+          test = suite.querySelector('.test:last-child')
+          suite = suite.querySelector('.suite:last-child')
+        }
+
+        test.appendChild(draw.cnv)
+      }
+    })
+
+    it('should scale a rect x2',function(){
+      var w = 20, h = 20;
+      var rect = makeRect(w,h)
+      expect(poly.aabb(rect)).to.eql([0,w,h,0])
+      draw.poly(rect).stroke('blue')
 
       var m = mat.scale(2,2);
       poly.transform(rect,m)
 
-      expect(poly.aabb(rect)).to.eql([0,2,2,0])
+      expect(poly.aabb(rect)).to.eql([0,w*2,h*2,0])
+      draw.poly(rect).stroke('red')
     })
 
     it('should scale a rect x.5',function(){
-      var rect = poly.make(0,2,2,2,2,0,0,0)
+      var w = 20, h = 20;
+      var rect = makeRect(w,h)
+      expect(poly.aabb(rect)).to.eql([0,w,h,0])
+      draw.poly(rect).stroke('blue')
 
-      expect(poly.aabb(rect)).to.eql([0,2,2,0])
-
-      var m = mat.scale(.5,.5);
+      var m = mat.scale(.5,.5)
       poly.transform(rect,m)
 
-      expect(poly.aabb(rect)).to.eql([0,1,1,0])
+      expect(poly.aabb(rect)).to.eql([0,w/2,h/2,0])
+      draw.poly(rect).stroke('red')
     })
 
     it('should scale a rect twice',function(){
-      var rect = poly.make(0,1,1,1,1,0,0,0)
-
-      expect(poly.aabb(rect)).to.eql([0,1,1,0])
+      var w = 20, h = 20;
+      var rect = makeRect(w,h)
+      expect(poly.aabb(rect)).to.eql([0,w,h,0])
+      draw.poly(rect).stroke('blue')
 
       var m = mat.scale(2,2)
       poly.transform(rect,m)
       poly.transform(rect,m)
 
-      expect(poly.aabb(rect)).to.eql([0,4,4,0])
+      expect(poly.aabb(rect)).to.eql([0,w*4,h*4,0])
+      draw.poly(rect).stroke('red')
     })
 
     it('should scale a rect twice on x',function(){
-      var rect = poly.make(0,1,1,1,1,0,0,0)
-
-      expect(poly.aabb(rect)).to.eql([0,1,1,0])
+      var w = 20, h = 20;
+      var rect = makeRect(w,h)
+      expect(poly.aabb(rect)).to.eql([0,w,h,0])
+      draw.poly(rect).stroke('blue')
 
       var m = mat.scale(2,1)
       poly.transform(rect,m)
       poly.transform(rect,m)
 
-      expect(poly.aabb(rect)).to.eql([0,4,1,0])
+      expect(poly.aabb(rect)).to.eql([0,w*4,h,0])
+      draw.poly(rect).stroke('red')
     })
 
     it('should scale a rect twice on y',function(){
-      var rect = poly.make(0,1,1,1,1,0,0,0)
-
-      expect(poly.aabb(rect)).to.eql([0,1,1,0])
+      var w = 20, h = 20;
+      var rect = makeRect(w,h)
+      expect(poly.aabb(rect)).to.eql([0,w,h,0])
+      draw.poly(rect).stroke('blue')
 
       var m = mat.scale(1,2)
       poly.transform(rect,m)
       poly.transform(rect,m)
 
-      expect(poly.aabb(rect)).to.eql([0,1,4,0])
+      expect(poly.aabb(rect)).to.eql([0,w,h*4,0])
+      draw.poly(rect).stroke('red')
     })
 
     it('should scale a rect from center',function(){
-      var rect = poly.make(0,1,1,1,1,0,0,0)
+      var w = 20, h = 20;
+      var rect = makeRect(w,h)
+      expect(poly.aabb(rect)).to.eql([0,w,h,0])
+      draw.poly(rect).stroke('blue')
 
-      expect(poly.aabb(rect)).to.eql([0,1,1,0])
-
-      var m = mat.translate(-0.5,-0.5)
+      var m = mat.translate(-w/2,-w/2)
       mat.scale(2,2,m)
-      mat.translate(0.5,0.5,m)
+      mat.translate(w/2,w/2,m)
 
       poly.transform(rect,m)
 
-      expect(poly.aabb(rect)).to.eql([-0.5,1.5,1.5,-0.5])
+      expect(poly.aabb(rect)).to.eql([-h/2,w+w/2,h+h/2,-w/2])
+      draw.poly(rect).stroke('red')
     })
 
     it('should scale a rect from right',function(){
-      var rect = poly.make(0,1,1,1,1,0,0,0)
+      var w = 20, h = 20;
+      var rect = makeRect(w,h)
+      expect(poly.aabb(rect)).to.eql([0,w,h,0])
+      draw.poly(rect).stroke('blue')
 
-      expect(poly.aabb(rect)).to.eql([0,1,1,0])
-
-      var m = mat.translate(-1,-1)
+      var m = mat.translate(-w,-h)
       mat.scale(2,2,m)
-      mat.translate(1,1,m)
+      mat.translate(w,h,m)
 
       poly.transform(rect,m)
 
-      expect(poly.aabb(rect)).to.eql([-1,1,1,-1])
+      expect(poly.aabb(rect)).to.eql([-h,w,h,-w])
+      draw.poly(rect).stroke('red')
     })
 
     it('should scale a rect from center on x',function(){
-      var rect = poly.make(0,1,1,1,1,0,0,0)
+      var w = 20, h = 20;
+      var rect = makeRect(w,h)
+      expect(poly.aabb(rect)).to.eql([0,w,h,0])
+      draw.poly(rect).stroke('blue')
 
-      expect(poly.aabb(rect)).to.eql([0,1,1,0])
-
-      var m = mat.translate(-0.5,0)
+      var m = mat.translate(-w/2,0)
       mat.scale(2,1,m)
-      mat.translate(0.5,0,m)
+      mat.translate(w/2,0,m)
 
       poly.transform(rect,m)
 
-      expect(poly.aabb(rect)).to.eql([0,1.5,1,-0.5])
+      expect(poly.aabb(rect)).to.eql([0,w+w/2,h,-w/2])
+      draw.poly(rect).stroke('red')
     })
   })
 
 })
+
+function createDraw(){
+  if( typeof window != 'undefined' ){
+    return new Draw(document.createElement('canvas'))
+  } else {
+    var draw = {
+      poly: function(){return draw},
+      fill: function(){return draw},
+      stroke: function(){return draw},
+      edge: function(){return draw},
+      vel: function(){return draw}
+    };
+    return draw;
+  }
+}
+
+function invert(p){
+  var q = poly.reverse(p);
+  poly.free(p)
+  return q;
+}
+
+function makeRect(w,h){
+   return poly.make(0,h,w,h,w,0,0,0)
+}

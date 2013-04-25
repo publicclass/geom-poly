@@ -4,7 +4,7 @@ var poly = require('geom-poly')
 function Draw(cnv){
   this.cnv = cnv;
   this.ctx = cnv.getContext('2d');
-  this.ctx.translate(50,10)
+  this.ctx.translate(50,50)
 }
 
 Draw.prototype = {
