@@ -75,19 +75,7 @@ describe('geom-poly',function(){
       draw.fill('black')
     })
     afterEach(function(){
-      if( typeof window != 'undefined' ){
-        // append the canvas after the results
-        var suite = document.querySelector('#mocha-report > .suite:last-child')
-          , test;
-
-        // find the last test
-        while( suite ){
-          test = suite.querySelector('.test:last-child')
-          suite = suite.querySelector('.suite:last-child')
-        }
-
-        test.appendChild(draw.cnv)
-      }
+      appendTest(draw.cnv)
     })
 
     it('should scale a rect x2',function(){
@@ -234,6 +222,21 @@ function createDraw(){
   }
 }
 
+function appendTest(el){
+  if( typeof window != 'undefined' ){
+    // append the canvas after the results
+    var suite = document.querySelector('#mocha-report > .suite:last-child')
+      , test;
+
+    // find the last test
+    while( suite ){
+      test = suite.querySelector('.test:last-child')
+      suite = suite.querySelector('.suite:last-child')
+    }
+
+    test.appendChild(el)
+  }
+}
 
 function invert(p){
   var q = poly.reverse(p);

@@ -18,19 +18,7 @@ describe('geom-poly',function(){
       draw.fill('black')
     })
     afterEach(function(){
-      if( typeof window != 'undefined' ){
-        // append the canvas after the results
-        var suite = document.querySelector('#mocha-report > .suite:last-child')
-          , test;
-
-        // find the last test
-        while( suite ){
-          test = suite.querySelector('.test:last-child')
-          suite = suite.querySelector('.suite:last-child')
-        }
-
-        test.appendChild(draw.cnv)
-      }
+      appendTest(draw.cnv)
     })
 
 
@@ -260,6 +248,22 @@ function createDraw(){
     return new Draw(document.createElement('canvas'));
   } else {
     return new Draw();
+  }
+}
+
+function appendTest(el){
+  if( typeof window != 'undefined' ){
+    // append the canvas after the results
+    var suite = document.querySelector('#mocha-report > .suite:last-child')
+      , test;
+
+    // find the last test
+    while( suite ){
+      test = suite.querySelector('.test:last-child')
+      suite = suite.querySelector('.suite:last-child')
+    }
+
+    test.appendChild(el)
   }
 }
 
