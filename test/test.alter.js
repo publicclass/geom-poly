@@ -3,9 +3,10 @@ var isNode = typeof __dirname != 'undefined';
 var poly = require(isNode ? '../' : 'geom-poly')
   , vec = require(isNode ? 'geom-vec' : 'publicclass-geom-vec')
   , mat = require(isNode ? 'geom-mat' : 'publicclass-geom-mat')
-  , expect = expect || require('expect.js');
+  , expect = expect || require('expect.js')
+  , Draw = Draw || require('./support/draw');
 
-poly.verbose = vec.verbose = false;
+mat.verbose = poly.verbose = vec.verbose = false;
 
 describe('geom-poly',function(){
 
@@ -224,20 +225,15 @@ describe('geom-poly',function(){
 
 })
 
+
 function createDraw(){
   if( typeof window != 'undefined' ){
-    return new Draw(document.createElement('canvas'))
+    return new Draw(document.createElement('canvas'));
   } else {
-    var draw = {
-      poly: function(){return draw},
-      fill: function(){return draw},
-      stroke: function(){return draw},
-      edge: function(){return draw},
-      vel: function(){return draw}
-    };
-    return draw;
+    return new Draw();
   }
 }
+
 
 function invert(p){
   var q = poly.reverse(p);

@@ -2,7 +2,8 @@ var isNode = typeof __dirname != 'undefined';
 
 var poly = require(isNode ? '../' : 'geom-poly')
   , vec = require(isNode ? 'geom-vec' : 'publicclass-geom-vec')
-  , expect = expect || require('expect.js');
+  , expect = expect || require('expect.js')
+  , Draw = Draw || require('./support/draw');
 
 vec.verbose = poly.verbose = false;
 
@@ -239,7 +240,7 @@ function intersectsLineLine(a1,a2,b1,b2,i){
 function intersectsSegment(o,r,v,e){
   var x = vec.dot(r,e);
 
-  if( x == 0 ){
+  if( x === 0 ){
     return false;
   }
   var p = vec.perp(r);
@@ -256,16 +257,9 @@ function intersectsSegment(o,r,v,e){
 
 function createDraw(){
   if( typeof window != 'undefined' ){
-    return new Draw(document.createElement('canvas'))
+    return new Draw(document.createElement('canvas'));
   } else {
-    var draw = {
-      poly: function(){return draw},
-      fill: function(){return draw},
-      stroke: function(){return draw},
-      edge: function(){return draw},
-      vel: function(){return draw}
-    };
-    return draw;
+    return new Draw();
   }
 }
 

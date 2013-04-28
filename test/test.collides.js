@@ -2,7 +2,8 @@ var isNode = typeof __dirname != 'undefined';
 
 var poly = require(isNode ? '../' : 'geom-poly')
   , vec = require(isNode ? 'geom-vec' : 'publicclass-geom-vec')
-  , expect = expect || require('expect.js');
+  , expect = expect || require('expect.js')
+  , Draw = Draw || require('./support/draw');
 
 vec.verbose = poly.verbose = false;
 
@@ -873,16 +874,9 @@ describe('geom-poly',function(){
 
 function createDraw(){
   if( typeof window != 'undefined' ){
-    return new Draw(document.createElement('canvas'))
+    return new Draw(document.createElement('canvas'));
   } else {
-    var draw = {
-      poly: function(){return draw},
-      fill: function(){return draw},
-      stroke: function(){return draw},
-      edge: function(){return draw},
-      vel: function(){return draw}
-    };
-    return draw;
+    return new Draw();
   }
 }
 
