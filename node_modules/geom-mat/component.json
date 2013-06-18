@@ -2,7 +2,7 @@
   "name": "geom-mat",
   "repo": "publicclass/geom-mat",
   "description": "A collection of terse, efficient matrix tools.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "keywords": [],
   "dependencies": {},
   "development": {},

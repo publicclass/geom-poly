@@ -1,11 +1,4 @@
 
-
-/**
- * hasOwnProperty.
- */
-
-var has = Object.prototype.hasOwnProperty;
-
 /**
  * Require the given path.
  *
@@ -82,10 +75,10 @@ require.resolve = function(path) {
 
   for (var i = 0; i < paths.length; i++) {
     var path = paths[i];
-    if (has.call(require.modules, path)) return path;
+    if (require.modules.hasOwnProperty(path)) return path;
   }
 
-  if (has.call(require.aliases, index)) {
+  if (require.aliases.hasOwnProperty(index)) {
     return require.aliases[index];
   }
 };
@@ -139,7 +132,7 @@ require.register = function(path, definition) {
  */
 
 require.alias = function(from, to) {
-  if (!has.call(require.modules, from)) {
+  if (!require.modules.hasOwnProperty(from)) {
     throw new Error('Failed to alias "' + from + '", it does not exist');
   }
   require.aliases[to] = from;
@@ -201,7 +194,7 @@ require.relative = function(parent) {
    */
 
   localRequire.exists = function(path) {
-    return has.call(require.modules, localRequire.resolve(path));
+    return require.modules.hasOwnProperty(localRequire.resolve(path));
   };
 
   return localRequire;
@@ -550,7 +543,7 @@ var poly = module.exports = {
     }
     p.vertices.push(v);
     p.length++;
-    return poly;
+    return p;
   },
 
   close: function(p){
@@ -561,7 +554,7 @@ var poly = module.exports = {
       var v = p.vertices[0];
       p.edges.push(vec.sub(v,l));
     }
-    return poly;
+    return p;
   },
 
   // source: http://alienryderflex.com/polygon/
@@ -581,13 +574,38 @@ var poly = module.exports = {
 
   area: function(p){
     var n = p.vertices.length
-      , sum = 0;
-    for(var i=0; i < n; i++){
-      var v = p.vertices[i]
-      var q = p.vertices[(i+1)%n]; // TODO optimize away modulo plz
-      sum += v[0] * q[1] - q[0] * v[1];
+      , area = 0;
+    for(var i=0, j=n-1; i < n; j=i, i++){
+      var v = p.vertices[i];
+      var q = p.vertices[j];
+      area += v[0] * q[1];
+      area -= v[1] * q[0];
     }
-    return .5 * sum;
+    return Math.abs(area / 2);
+  },
+
+  perimeter: function(p){
+    var sum = 0;
+    for(var i=0; i < p.edges.length; i++){
+      var e = p.edges[i];
+      sum += vec.len(e); // TODO optimize away sqrt?
+    }
+    return sum;
+  },
+
+  radiusSq: function(p,c){
+    var r = 0;
+    c = c || poly.centroid(p);
+    for(var i=0; i < p.length; i++){
+      var v = p.vertices[i];
+      var d = vec.distSq(v,c);
+      if( d > r ) r = d;
+    }
+    return r;
+  },
+
+  radius: function(p,c){
+    return Math.sqrt(poly.radiusSq(p,c));
   },
 
   centroid: function(p){
@@ -595,23 +613,32 @@ var poly = module.exports = {
       , n = p.length
       , P = p.vertices
       , c = vec.make();
-    for(var i=0; i < n; i++){
+    for(var i=0, j=n-1; i < n; j=i, i++){
       var v = P[i]
-        , q = P[(i+1)%n]
-        , ai = vec.cross(v,q);
-      c[0] += (v[0] + q[0]) * ai
-      c[1] += (v[1] + q[1]) * ai
+        , q = P[j]
+        , x = vec.cross(v,q);
+      c[0] += (v[0] + q[0]) * x
+      c[1] += (v[1] + q[1]) * x
     }
     var b = 1 / (6 * a);
-    return vec.mul(c,[b,b],c);
+    vec.smul(c,b,c)
+    if( c[0] < 0 ){
+      vec.neg(c,c)
+    }
+    return c;
   },
 
   translate: function(p,x,y,o){
+    if( o && (o.length !== p.length) ){
+      // TODO this will not make a functional `o` (should use poly.add()/poly.close())
+      throw new Error('translate to unequal polys are not supported')
+      return;
+    }
     var t = vec.make(x,y)
     o = o || p;
-    for(var j=0; j < p.length; j++)
+    for(var j=0; j < p.length; j++){
       vec.add(p.vertices[j],t,o.vertices[j]);
-    // TODO this will not make a functional `o` (should use poly.add()/poly.close())
+    }
     vec.free(t)
     return o;
   },
@@ -627,18 +654,33 @@ var poly = module.exports = {
   },
 
   transform: function(p,mat,o){
-    o = o || p
-    for(var j=0; j < p.length; j++){
-      vec.transform(p.vertices[j],mat,o.vertices[j]);
-      vec.transform(p.edges[j],mat,o.edges[j]);
+    if( o && (o.length !== p.length) ){
+      // TODO this will not make a functional `o` (should use poly.add()/poly.close())
+      throw new Error('transform to unequal polys are not supported')
+      return;
     }
-    // TODO this will not make a functional `o` (should use poly.add()/poly.close())
+    o = o || p
+    var n = p.length;
+    for(var i=0, j=n-1; i < n; j=i, i++){
+      vec.transform(p.vertices[i],mat,o.vertices[i]);
+      vec.sub(p.vertices[i],p.vertices[j],o.edges[j])
+    }
+    vec.sub(p.vertices[0],p.vertices[n-1],o.edges[n-1])
     return o;
   },
 
   convexHull: function(p,o){
     // TODO
     throw new Error('convexHull not implemented')
+  },
+
+  reverse: function(p){
+    var o = poly.make();
+    for(var i=p.length-1; i>=0; i--){
+      var v = p.vertices[i];
+      poly.add(o,v[0],v[1]);
+    }
+    return poly.close(o);
   },
 
   aabb: function(p,o){
@@ -696,8 +738,8 @@ var poly = module.exports = {
       vec.perp(edge,axis)
       vec.norm(axis,axis)
 
-      project(a,axis,iA)
-      project(b,axis,iB)
+      poly.project(a,axis,iA)
+      poly.project(b,axis,iB)
 
       // are they currently intersecting?
       var iD = intervalDistance(iA,iB);
@@ -718,11 +760,6 @@ var poly = module.exports = {
         res.willIntersect = false;
       }
 
-      // no intersection is and won't happen
-      if( !res.intersect && !res.willIntersect ){
-        break;
-      }
-
       // find out if it's the closest one
       iD = Math.abs(iD);
       if( iD < minIntervalDistance ){
@@ -737,6 +774,12 @@ var poly = module.exports = {
           vec.neg(translationAxis,translationAxis)
         }
       }
+
+      // no intersection is and won't happen
+      if( !res.intersect && !res.willIntersect ){
+        break;
+      }
+
     }
 
     // the minimum translation vector can
@@ -765,28 +808,29 @@ var poly = module.exports = {
     }
 
     return res;
+  },
+
+
+  // `i` (interval) will be [min,max]
+  // `axis` (vec) will be [x,y]
+  project: function(p,axis,i){
+    i = i || vec.make();
+    i[0] =  Infinity;
+    i[1] = -Infinity;
+    for(var j=0; j < p.length; j++){
+      var dot = vec.dot(axis,p.vertices[j])
+      if( dot < i[0] ){
+        i[0] = dot;
+      }
+      if( dot > i[1] ){
+        i[1] = dot;
+      }
+    }
+    return i;
   }
 
 }
 
-
-// `i` (interval) will be [min,max]
-// TODO should this be exposed as poly.project()?
-function project(p,axis,i){
-  i = i || vec.make();
-  i[0] =  Infinity;
-  i[1] = -Infinity;
-  for(var j=0; j < p.length; j++){
-    var dot = vec.dot(axis,p.vertices[j])
-    if( dot < i[0] ){
-      i[0] = dot;
-    }
-    if( dot > i[1] ){
-      i[1] = dot;
-    }
-  }
-  return i
-}
 
 
 function intervalDistance(a,b){
@@ -794,4 +838,5 @@ function intervalDistance(a,b){
 }
 });
 require.alias("publicclass-geom-vec/index.js", "geom-poly/deps/geom-vec/index.js");
+require.alias("publicclass-geom-vec/index.js", "geom-vec/index.js");
 
